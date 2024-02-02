@@ -26,6 +26,7 @@ def move_user_documents(user_directory, temp_directory):
     - user_directory: The source directory from which files and folders are to be moved.
     - temp_directory: The target directory where files and folders will be moved to.
     """
+        
     try:
         # Ensure the temporary directory exists
         os.makedirs(temp_directory, exist_ok=True)
@@ -37,7 +38,8 @@ def move_user_documents(user_directory, temp_directory):
             
             # Move the item (file or directory)
             shutil.move(source_path, target_path)
-            console.print(f"[bold green]{item.name}[/bold green] has been moved to [bold yellow]{temp_directory}[/bold yellow]")
+            console.print(f"[bold green]{item.name}[/bold green] has been moved to [bold yellow]{temp_directory} and {user_directory} has been removed.[/bold yellow]")
+            shutil.rmtree(user_directory)  # Remove the user_directory after moving its contents
                 
     except FileNotFoundError as e:
         console.print("[bold red]User directory not found.[/bold red]")
@@ -159,7 +161,7 @@ def main():
     base_directory = os.path.dirname(os.path.abspath(__file__))  # Get the script's directory
     
     while True:
-        console.print("\n1. Create directory\n2. Delete user\n3. Sort documents\n4. Parse log files for errors and warnings\n5. Count files\n6. Exit")
+        console.print("\n1. Create directory\n2. Delete user\n3. Sort documents in given directory\n4. Parse log files for errors and warnings\n5. Count files of specific type in a given directory\n6. Exit")
         choice = Prompt.ask("Choose a task (Enter the number)", choices=['1', '2', '3', '4', '5', '6'], default='6')
         
         if choice == '1':
@@ -171,7 +173,7 @@ def main():
             console.print(f"Directory created at: {absolute_directory_path}")
         
         elif choice == '2':
-            user_name = Prompt.ask("Enter the user to delete (e.g., user1")
+            user_name = Prompt.ask("Enter the user to delete (e.g., user1)")
             # Ask for the relative or absolute base directory where user directories are located
             relative_base_dir = Prompt.ask("Enter the base directory where user directories are located (relative to the script or absolute)")
             base_dir = os.path.abspath(os.path.join(base_directory, relative_base_dir))

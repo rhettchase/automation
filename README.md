@@ -25,7 +25,6 @@ Console application that includes the below features:
 <!-- - [front-end application](http://xyz.com/) (when applicable) -->
 - chatGPT
 
-
 ### Setup
 
 - `pip install -r requirements.txt`
@@ -44,7 +43,26 @@ Alternatively:
 
 #### How to initialize/run your application (where applicable)
 
+- Initialize app in console: `python3 app.py`
+- Select from menu of from `1-6` on what you would like to execute
 
+1. Create directory: enter the path of the directory you want to create the new directory (e.g., `user-docs/new_directory_name`)
+
+2. Delete user
+  - enter the user to delete (e.g., `user1`)
+  - enter the directory where user directories are located (`user-docs`)
+
+3. Sort documents in given directory:
+  - enter the path of the directory you want sorted (e.g., `user-docs/user1`)
+
+4. Parse log files for errors and warnings
+  - enter the path of the `logs` directory where the file(s) to be parsed reside
+
+5. Count files of specific type in a given directory
+  - enter the path of the directory you want to count files
+  - enter the regular expression pattern you'd like to search for (e.g., `txt`)
+
+6. Type `6` + `Enter` to Exit
 
 #### How to use your library (where applicable)
 
