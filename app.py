@@ -54,6 +54,8 @@ def move_all_files(source_directory, target_directory):
         
 def main():
     """Main function to run the CLI app."""
+    base_directory = os.path.dirname(os.path.abspath(__file__))  # Get the script's directory
+    
     while True:
         console.print("\n1. Create directory\n2. Delete user\n3. Sort documents\n4. Parse a log file for errors and warnings\n5. Count files\n6. Exit")
         choice = Prompt.ask("Choose a task (Enter the number)", choices=['1', '2', '3', '4', '5', '6'], default='6')
@@ -62,16 +64,11 @@ def main():
             directory_name = Prompt.ask("Enter the name of the directory you want to create")
             create_directory(directory_name)
         elif choice == '2':
-            directory_name = Prompt.ask("Enter the user to delete (user1 or user2)")
-            if directory_name == 'user1':
-                source_directory = 'user1'
-                move_user_documents(source_directory)
-            elif directory_name == 'user2':
-                source_directory = 'user2'
-                move_user_documents(source_directory)
-            else:
-                console.print(f"[bold red]Please choose valid user[/bold red]")
-                directory_name = Prompt.ask("Enter the user to delete (user1 or user2)")
+            user_name = Prompt.ask("Enter the user to delete (user1 or user2)")
+            source_directory = os.path.join(base_directory, "user-docs", user_name)
+            temp_directory_path = os.path.join(base_directory, "user-docs", f"{user_name}_temp")
+            create_directory(temp_directory_path)
+            move_user_documents(source_directory, temp_directory_path)
                 
         elif choice == '3':
             pass
