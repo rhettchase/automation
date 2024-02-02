@@ -9,12 +9,23 @@ import shutil
 console = Console()
 
 def create_directory(directory_name):
-    """ """
+    """
+    Creates a directory at the specified path if it doesn't already exist.
+
+    Parameters:
+    - directory_name: The path where the directory will be created.
+    """
     # Create a source directory
     os.makedirs(directory_name, exist_ok=True)
     
 def move_user_documents(user_directory, temp_directory):
-    """Move all documents and directories from a deleted user's folder to a temporary folder."""
+    """
+    Moves all files and directories from a user's folder to a specified temporary folder.
+
+    Parameters:
+    - user_directory: The source directory from which files and folders are to be moved.
+    - temp_directory: The target directory where files and folders will be moved to.
+    """
     try:
         # Ensure the temporary directory exists
         os.makedirs(temp_directory, exist_ok=True)
@@ -34,6 +45,12 @@ def move_user_documents(user_directory, temp_directory):
         console.print(f"[bold red]Error: {e}[/bold red]")
         
 def sort_documents(folder_path):
+    """
+    Sorts documents into 'logs' and 'mail' folders based on their file type within the given directory.
+
+    Parameters:
+    - folder_path: The directory whose documents are to be sorted.
+    """
     # Define the target folders for each file type
     log_folder = os.path.join(folder_path, 'logs')
     mail_folder = os.path.join(folder_path, 'mail')
@@ -65,6 +82,12 @@ def sort_documents(folder_path):
             console.print(f"[bold green]{file_name}[/bold green] has been moved to [bold yellow]{target_folder}[/bold yellow]")
 
 def parse_logs(source_directory):
+    """
+    Parses log files in the given directory for errors and warnings, creating separate files for each in a 'warnings_errors' directory.
+
+    Parameters:
+    - source_directory: The directory containing log files to be parsed.
+    """
     try:
         # Calculate the path for the 'warnings_errors' directory alongside 'logs'
         warnings_errors_dir = os.path.join(source_directory, 'warnings_errors')
@@ -96,6 +119,39 @@ def parse_logs(source_directory):
         console.print("[bold red]The specified directory does not exist.[/bold red]")
     except Exception as e:
         console.print(f"[bold red]An unexpected error occurred: {e}[/bold red]")
+        
+def search_and_count_files(directory, pattern):
+    """
+    Searches for and counts the number of files matching a given regex pattern in the specified directory.
+
+    Parameters:
+    - directory: The directory to search within.
+    - pattern: The regex pattern to match file names against.
+
+    Returns:
+    - The count of files matching the pattern.
+    """
+    try:
+        files = os.listdir(directory)
+        matches = [file for file in files if re.search(pattern, file)]
+        
+        # Count the matches
+        count = len(matches)
+        
+        # Display the results in a table, with the count included in the title
+        table = Table(title=f"Files in [bold green]{directory}[/bold green] matching [bold blue]{pattern}[/bold blue]: [bold yellow]{count} matches found[/bold yellow]")
+        table.add_column("Matching File Name", style="dim")
+        
+        for match in matches:
+            table.add_row(match)
+        
+        console.print(table)
+        
+        return count
+        
+    except FileNotFoundError:
+        console.print("[bold red]Directory not found.[/bold red]")
+        return 0  # Return 0 if the directory is not found
         
         
 def main():
@@ -139,6 +195,13 @@ def main():
 
             # Now, directly call parse_logs with the user-provided path
             parse_logs(logs_directory_path)
+            
+        elif choice == '5':
+            # Ask for the relative or absolute path of the directory you want to count
+            relative_directory_path = Prompt.ask("Enter the path of the directory you want to count file types (relative to the script or absolute)")
+            directory_path = os.path.abspath(os.path.join(base_directory, relative_directory_path))
+            pattern = Prompt.ask("Enter the regex pattern to search for")
+            search_and_count_files(directory_path, pattern)
     
         else:
             break
